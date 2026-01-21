@@ -1,43 +1,37 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-</head>
-<body>
+@extends('layouts.app')
 
-<h1>Login</h1>
+@section('title', 'Вход')
 
-{{-- ошибки --}}
-@if ($errors->any())
-    <div style="color: red;">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
+@section('content')
+    <h1>Вход</h1>
 
-<form method="POST" action="{{ route('login.process') }}">
-    @csrf
+    @if ($errors->any())
+        <div style="color: red;">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-    <div>
-        <label>Email</label><br>
-        <input type="email" name="email" required>
-    </div>
+    <form method="POST" action="{{ route('login.process') }}">
+        @csrf
 
-    <div>
-        <label>Password</label><br>
-        <input type="password" name="password" required>
-    </div>
+        <div>
+            <label>Email</label><br>
+            <input type="email" name="email" required>
+        </div>
 
-    <button type="submit">Login</button>
-</form>
+        <div>
+            <label>Пароль</label><br>
+            <input type="password" name="password" required>
+        </div>
 
-<p>
-    Нет аккаунта? <a href="/register">Регистрация</a>
-</p>
+        <button type="submit">Войти</button>
+    </form>
 
-</body>
-</html>
+    <p>
+        Нет аккаунта? <a href="{{ route('register') }}">Регистрация</a>
+    </p>
+@endsection

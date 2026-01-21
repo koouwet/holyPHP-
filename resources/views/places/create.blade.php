@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Создать вещь')
+@section('title', 'Добавить место')
 
 @section('content')
-    <h1>Создать вещь</h1>
+    <h1>Добавить место</h1>
 
     @if ($errors->any())
         <div style="color:red;">
@@ -15,7 +15,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('things.store') }}">
+    <form method="POST" action="{{ route('places.store') }}">
         @csrf
 
         <div>
@@ -29,8 +29,17 @@
         </div>
 
         <div>
-            <label>Гарантия / срок годности</label><br>
-            <input type="date" name="wrnt" value="{{ old('wrnt') }}">
+            <label>
+                <input type="checkbox" name="repair" value="1" {{ old('repair') ? 'checked' : '' }}>
+                Это ремонт / мойка
+            </label>
+        </div>
+
+        <div>
+            <label>
+                <input type="checkbox" name="work" value="1" {{ old('work') ? 'checked' : '' }}>
+                Место сейчас в работе
+            </label>
         </div>
 
         <button type="submit">Сохранить</button>

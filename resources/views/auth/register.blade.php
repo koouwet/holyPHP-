@@ -1,48 +1,42 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Register</title>
-</head>
-<body>
+@extends('layouts.app')
 
-<h1>Register</h1>
+@section('title', 'Регистрация')
 
-{{-- ошибки --}}
-@if ($errors->any())
-    <div style="color: red;">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
+@section('content')
+    <h1>Регистрация</h1>
 
-<form method="POST" action="{{ route('register.process') }}">
-    @csrf
+    @if ($errors->any())
+        <div style="color: red;">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-    <div>
-        <label>Name</label><br>
-        <input type="text" name="name" required>
-    </div>
+    <form method="POST" action="{{ route('register.process') }}">
+        @csrf
 
-    <div>
-        <label>Email</label><br>
-        <input type="email" name="email" required>
-    </div>
+        <div>
+            <label>Имя</label><br>
+            <input type="text" name="name" required value="{{ old('name') }}">
+        </div>
 
-    <div>
-        <label>Password</label><br>
-        <input type="password" name="password" required>
-    </div>
+        <div>
+            <label>Email</label><br>
+            <input type="email" name="email" required value="{{ old('email') }}">
+        </div>
 
-    <button type="submit">Register</button>
-</form>
+        <div>
+            <label>Пароль</label><br>
+            <input type="password" name="password" required>
+        </div>
 
-<p>
-    Уже есть аккаунт? <a href="/login">Войти</a>
-</p>
+        <button type="submit">Зарегистрироваться</button>
+    </form>
 
-</body>
-</html>
+    <p>
+        Уже есть аккаунт? <a href="{{ route('login') }}">Войти</a>
+    </p>
+@endsection

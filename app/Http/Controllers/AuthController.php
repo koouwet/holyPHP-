@@ -26,7 +26,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request -> session() -> regenerate();
             
-            return redirect() -> route('index');
+            return redirect()->route('things.index');
         }
 
         return back();
@@ -49,13 +49,12 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'user'
         ]);
 
         // Автоматически входим после регистрации
         Auth::login($user);
 
-        return redirect() -> route('index');
+        return redirect()->route('things.index');
     }
 
     public function logout(Request $request)

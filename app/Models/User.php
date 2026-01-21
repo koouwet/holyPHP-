@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -44,5 +45,17 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // вещи, созданные пользователем
+    public function things()
+    {
+        return $this->hasMany(Thing::class, 'master_id');
+    }
+
+    // записи использования (когда этому пользователю выдали вещь)
+    public function usages()
+    {
+        return $this->hasMany(Usage::class);
     }
 }
