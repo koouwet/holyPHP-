@@ -33,3 +33,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('places', PlaceController::class);
     Route::resource('usages', UsageController::class)->except(['show']);
 });
+
+
+Route::get('/things/{thing}/transfer', [ThingController::class, 'transferForm'])
+    ->name('things.transfer.form');
+
+Route::post('/things/{thing}/transfer', [ThingController::class, 'transfer'])
+    ->name('things.transfer');
+

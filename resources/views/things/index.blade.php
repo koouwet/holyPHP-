@@ -31,6 +31,10 @@
         |               <a href="{{ route('things.edit', $thing) }}">Редактировать</a>
                     @endcan
 
+                    @can('transfer', $thing)
+        |               <a href="{{ route('things.transfer.form', $thing) }}">Передать</a>
+                    @endcan
+
                     @can('delete', $thing)
                         <form action="{{ route('things.destroy', $thing) }}" method="POST" style="display:inline;">
                         @csrf

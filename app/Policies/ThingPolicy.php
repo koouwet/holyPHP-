@@ -48,4 +48,10 @@ class ThingPolicy
 
         return $thing->master_id === $user->id;
     }
+
+    public function transfer(User $user, Thing $thing): bool
+    {
+        return $thing->master_id === $user->id;
+    }
+
 }

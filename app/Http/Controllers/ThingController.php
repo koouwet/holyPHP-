@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Thing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use App\Models\Place;
+use App\Models\Usage;
+
 
 class ThingController extends Controller
 {
@@ -150,6 +154,42 @@ class ThingController extends Controller
 
         return redirect()->route('things.index')->with('status', 'Вещь удалена');
     }
+
+    public function transferForm(Thing $thing)
+    {
+        $this->authorize('transfer', $thing);
+
+        return view('things.transfer', [
+            'thing' => $thing,
+            'users' => User::orderBy('name')->get(),
+            'places' => Place::orderBy('name')->get(),
+        ]);
+    }
+
+    public function transfer(Request $request, Thing $thing)
+    {
+        $this->authorize('transfer', $thing);
+
+        $data = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'place_id' => 'required|exists:places,id',
+        ]);
+
+        // если вещь уже была выдана — перезаписываем
+        Usage::updateOrCreate(
+            ['thing_id' => $thing->id],
+            [
+                'user_id' => $data['user_id'],
+                'place_id' => $data['place_id'],
+            ]
+        );
+
+        return redirect()
+            ->route('things.show', $thing)
+            ->with('status', 'Вещь передана пользователю');
+    }
+
+
 
 }
 
