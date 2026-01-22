@@ -28,6 +28,8 @@ return new class extends Migration
 
             $table->integer('amount');
 
+            $table->unique('thing_id');
+            
             $table->timestamps();
         });
 

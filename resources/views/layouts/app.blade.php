@@ -13,15 +13,50 @@
         table { border-collapse: collapse; width: 100%; }
         th, td { border: 1px solid #ddd; padding: 8px; }
         th { background: #f3f3f3; }
+        .dropdown {
+        position: relative;
+        cursor: pointer;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 18px;
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 4px 8px;
+            z-index: 100;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
     </style>
 </head>
 <body>
 <nav>
     <a href="{{ route('home') }}">Главная</a>
     @auth
-        <a href="{{ route('things.index') }}">Вещи</a>
+        <span class="dropdown">
+    <span class="dropdown-title">Вещи ▾</span>
+    <span class="dropdown-menu">
+        <a href="{{ route('things.filter.my') }}">My things</a><br>
+        <a href="{{ route('things.filter.repair') }}">Repair things</a><br>
+        <a href="{{ route('things.filter.work') }}">Work</a><br>
+        <a href="{{ route('things.filter.used') }}">Used things</a><br>
+        <a href="{{ route('things.filter.all') }}">All things</a>
+    </span>
+</span>
+
         <a href="{{ route('places.index') }}">Места</a>
         <a href="{{ route('usages.index') }}">Выдачи</a>
+        @can('admin')
+            <a href="{{ route('places.create') }}">Добавить место</a>
+        @endcan
+
+
         <span>Привет, {{ auth()->user()->name }}</span>
         <form action="{{ route('logout') }}" method="POST" style="display: inline;">
             @csrf

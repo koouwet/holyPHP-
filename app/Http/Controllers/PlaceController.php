@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Place;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+
 
 class PlaceController extends Controller
 {
     public function index()
     {
+        $this->authorize('viewAny', Place::class);
         $places = Place::orderBy('name')->get();
 
         return view('places.index', compact('places'));
@@ -16,11 +19,15 @@ class PlaceController extends Controller
 
     public function create()
     {
+        Gate::authorize('admin');
+        $this->authorize('create', Place::class);
         return view('places.create');
     }
 
     public function store(Request $request)
     {
+        Gate::authorize('admin');
+        $this->authorize('create', Place::class);
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -38,11 +45,15 @@ class PlaceController extends Controller
 
     public function edit(Place $place)
     {
+        Gate::authorize('admin');
+        $this->authorize('update', $place);
         return view('places.edit', compact('place'));
     }
 
     public function update(Request $request, Place $place)
     {
+        Gate::authorize('admin');
+        $this->authorize('update', $place);
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -60,6 +71,8 @@ class PlaceController extends Controller
 
     public function destroy(Place $place)
     {
+        Gate::authorize('admin');
+        $this->authorize('delete', $place);
         $place->delete();
 
         return redirect()->route('places.index')->with('status', 'Место удалено');

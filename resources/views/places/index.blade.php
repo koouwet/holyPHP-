@@ -5,7 +5,9 @@
 @section('content')
     <h1>Места хранения</h1>
 
-    <p><a href="{{ route('places.create') }}">Добавить место</a></p>
+    @can('create', App\Models\Place::class)
+        <p><a href="{{ route('places.create') }}">Добавить место</a></p>
+    @endcan
 
     <table>
         <thead>
@@ -25,12 +27,16 @@
                 <td>{{ $place->repair ? 'Да' : 'Нет' }}</td>
                 <td>{{ $place->work ? 'Да' : 'Нет' }}</td>
                 <td>
-                    <a href="{{ route('places.edit', $place) }}">Редактировать</a>
-                    <form action="{{ route('places.destroy', $place) }}" method="POST" style="display:inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" onclick="return confirm('Удалить место?')">Удалить</button>
-                    </form>
+                    @can('update', $place)
+                        <a href="{{ route('places.edit', $place) }}">Редактировать</a>
+                        <form action="{{ route('places.destroy', $place) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" onclick="return confirm('Удалить место?')">Удалить</button>
+                        </form>
+                    @else
+                        —
+                    @endcan
                 </td>
             </tr>
         @empty

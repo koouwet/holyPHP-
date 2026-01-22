@@ -8,25 +8,26 @@
     <p><strong>Описание:</strong> {{ $thing->description ?? '—' }}</p>
     <p><strong>Гарантия / срок годности:</strong> {{ $thing->wrnt ?? '—' }}</p>
 
-    <h2>Выдачи / использование</h2>
-    <table>
-        <thead>
-        <tr>
-            <th>Кому</th>
-            <th>Где хранится</th>
-            <th>Количество</th>
-        </tr>
-        </thead>
-        <tbody>
-        @forelse ($thing->usages as $usage)
+    <h2>Использование</h2>
+
+    @if ($thing->usage)
+        <table>
+            <thead>
             <tr>
-                <td>{{ $usage->user->name }}</td>
-                <td>{{ $usage->place->name }}</td>
-                <td>{{ $usage->amount }}</td>
+                <th>Кому</th>
+                <th>Где хранится</th>
+                <th>Количество</th>
             </tr>
-        @empty
-            <tr><td colspan="3">Эта вещь пока никуда не выдана</td></tr>
-        @endforelse
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{ $thing->usage->user->name }}</td>
+                <td>{{ $thing->usage->place->name }}</td>
+                <td>{{ $thing->usage->amount }}</td>
+            </tr>
+            </tbody>
+        </table>
+    @else
+        <p>Эта вещь сейчас ни у кого не используется</p>
+    @endif
 @endsection

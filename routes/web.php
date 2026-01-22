@@ -22,6 +22,13 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+    // фильтры списка вещей (доп. задание)
+    Route::get('/things/filter/my', [ThingController::class, 'listMy'])->name('things.filter.my');
+    Route::get('/things/filter/repair', [ThingController::class, 'listRepair'])->name('things.filter.repair');
+    Route::get('/things/filter/work', [ThingController::class, 'listWork'])->name('things.filter.work');
+    Route::get('/things/filter/used', [ThingController::class, 'listUsed'])->name('things.filter.used');
+    Route::get('/things/filter/all', [ThingController::class, 'listAll'])->name('things.filter.all');
+
     Route::resource('things', ThingController::class);
     Route::resource('places', PlaceController::class);
     Route::resource('usages', UsageController::class)->except(['show']);

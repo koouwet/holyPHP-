@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Thing extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
         'description',
@@ -20,8 +23,8 @@ class Thing extends Model
     }
 
     // все использования этой вещи
-    public function usages()
+    public function usage()
     {
-        return $this->hasMany(Usage::class);
+        return $this->hasOne(Usage::class);
     }
 }
