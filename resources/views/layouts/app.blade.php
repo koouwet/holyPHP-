@@ -7,17 +7,11 @@
         body { font-family: Arial, sans-serif; margin: 20px; }
         nav a { margin-right: 12px; }
         .flash { padding: 10px; background: #eef; border: 1px solid #ccd; margin: 10px 0; }
-        form { margin: 10px 0; }
-        label { font-weight: bold; }
-        input, textarea, select { min-width: 260px; }
         table { border-collapse: collapse; width: 100%; }
         th, td { border: 1px solid #ddd; padding: 8px; }
         th { background: #f3f3f3; }
-        .dropdown {
-        position: relative;
-        cursor: pointer;
-        }
 
+        .dropdown { position: relative; cursor: pointer; }
         .dropdown-menu {
             display: none;
             position: absolute;
@@ -28,41 +22,38 @@
             padding: 4px 8px;
             z-index: 100;
         }
-
-        .dropdown:hover .dropdown-menu {
-            display: block;
-        }
-
+        .dropdown:hover .dropdown-menu { display: block; }
     </style>
 </head>
 <body>
+
 <nav>
     <a href="{{ route('home') }}">Главная</a>
+
     @auth
         <span class="dropdown">
-    <span class="dropdown-title">Вещи ▾</span>
-    <span class="dropdown-menu">
-        <a href="{{ route('things.filter.my') }}">My things</a><br>
-        <a href="{{ route('things.filter.repair') }}">Repair things</a><br>
-        <a href="{{ route('things.filter.work') }}">Work</a><br>
-        <a href="{{ route('things.filter.used') }}">Used things</a><br>
-        <a href="{{ route('things.filter.all') }}">All things</a>
-    </span>
-</span>
+            <span>Вещи ▾</span>
+            <span class="dropdown-menu">
+                <a href="{{ route('things.filter.my') }}">My things</a><br>
+                <a href="{{ route('things.filter.repair') }}">Repair things</a><br>
+                <a href="{{ route('things.filter.work') }}">Work</a><br>
+                <a href="{{ route('things.filter.used') }}">Used things</a><br>
+                <a href="{{ route('things.filter.all') }}">All things</a>
+            </span>
+        </span>
 
         <a href="{{ route('places.index') }}">Места</a>
         <a href="{{ route('usages.index') }}">Выдачи</a>
-        @can('admin')
-            <a href="{{ route('places.create') }}">Добавить место</a>
-        @endcan
-
+        <a href="{{ route('things.archive') }}">Архив</a>
 
         <span>Привет, {{ auth()->user()->name }}</span>
-        <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+
+        <form action="{{ route('logout') }}" method="POST" style="display:inline;">
             @csrf
             <button type="submit">Выйти</button>
         </form>
     @endauth
+
     @guest
         <a href="{{ route('login') }}">Вход</a>
         <a href="{{ route('register') }}">Регистрация</a>
@@ -74,5 +65,6 @@
 @endif
 
 @yield('content')
+
 </body>
 </html>

@@ -9,6 +9,8 @@ use App\Models\User;
 use App\Models\Place;
 use App\Models\Usage;
 use Illuminate\Support\Facades\Cache;
+use App\Models\ThingArchive;
+
 
 
 class ThingController extends Controller
@@ -154,15 +156,30 @@ class ThingController extends Controller
     }
 
     public function destroy(Thing $thing)
-    {
-        $this->authorize('delete', $thing);
+{
+    $this->authorize('delete', $thing);
 
-        $thing->delete();
+    // определяем последнего пользователя и место
+    $usage = $thing->usage;
 
-        Cache::forget('things.all');
+    ThingArchive::create([
+        'name' => $thing->name,
+        'description' => $thing->description,
+        'owner_name' => $thing->master?->name ?? '—',
+        'last_user_name' => $usage?->user?->name,
+        'place_name' => $usage?->place?->name,
+        'restored' => false,
+    ]);
 
-        return redirect()->route('things.index')->with('status', 'Вещь удалена');
-    }
+    $thing->delete();
+
+    Cache::forget('things.all');
+
+    return redirect()
+        ->route('things.index')
+        ->with('status', 'Вещь удалена и помещена в архив');
+}
+
 
     public function transferForm(Thing $thing)
     {
@@ -197,6 +214,38 @@ class ThingController extends Controller
             ->route('things.show', $thing)
             ->with('status', 'Вещь передана пользователю');
     }
+
+    public function archive()
+{
+    $archives = \App\Models\ThingArchive::orderBy('created_at', 'desc')->get();
+
+    return view('things.archive', compact('archives'));
+}
+
+public function restoreFromArchive($id)
+{
+    $archive = \App\Models\ThingArchive::findOrFail($id);
+
+    if ($archive->restored) {
+        return back()->with('status', 'Вещь уже восстановлена');
+    }
+
+    $thing = Thing::create([
+        'name' => $archive->name,
+        'description' => $archive->description,
+        'master_id' => Auth::id(), // хозяин = кто восстановил
+    ]);
+
+    $archive->update([
+        'restored' => true,
+    ]);
+
+    Cache::forget('things.all');
+
+    return redirect()
+        ->route('things.archive')
+        ->with('status', 'Вещь восстановлена из архива');
+}
 
 
 
