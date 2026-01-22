@@ -5,14 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Place;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Cache;
+
 
 
 class PlaceController extends Controller
 {
     public function index()
     {
-        $this->authorize('viewAny', Place::class);
-        $places = Place::orderBy('name')->get();
+        $places = Cache::remember('places.all', 600, function () {
+        return Place::orderBy('name')->get();
+    });
 
         return view('places.index', compact('places'));
     }
@@ -40,6 +43,8 @@ class PlaceController extends Controller
 
         Place::create($data);
 
+        Cache::forget('places.all');
+
         return redirect()->route('places.index')->with('status', 'Место создано');
     }
 
@@ -66,6 +71,8 @@ class PlaceController extends Controller
 
         $place->update($data);
 
+        Cache::forget('places.all');
+
         return redirect()->route('places.index')->with('status', 'Место обновлено');
     }
 
@@ -74,6 +81,8 @@ class PlaceController extends Controller
         Gate::authorize('admin');
         $this->authorize('delete', $place);
         $place->delete();
+
+        Cache::forget('places.all');
 
         return redirect()->route('places.index')->with('status', 'Место удалено');
     }

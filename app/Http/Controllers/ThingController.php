@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Place;
 use App\Models\Usage;
+use Illuminate\Support\Facades\Cache;
 
 
 class ThingController extends Controller
@@ -23,9 +24,11 @@ class ThingController extends Controller
     // общий список всех вещей
     public function listAll()
     {
-        $things = Thing::with(['master'])
-            ->orderBy('name')
-            ->get();
+        $things = Cache::remember('things.all', 600, function () {
+            return Thing::with(['master'])
+                ->orderBy('name')
+                ->get();
+        });
 
         return view('things.index', [
             'title' => 'Все вещи',
@@ -112,6 +115,8 @@ class ThingController extends Controller
 
         Thing::create($data);
 
+        Cache::forget('things.all');
+
         return redirect()->route('things.index')->with('status', 'Вещь создана');
     }
 
@@ -143,6 +148,8 @@ class ThingController extends Controller
 
         $thing->update($data);
 
+        Cache::forget('things.all');
+
         return redirect()->route('things.index')->with('status', 'Вещь обновлена');
     }
 
@@ -151,6 +158,8 @@ class ThingController extends Controller
         $this->authorize('delete', $thing);
 
         $thing->delete();
+
+        Cache::forget('things.all');
 
         return redirect()->route('things.index')->with('status', 'Вещь удалена');
     }
